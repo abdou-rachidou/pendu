@@ -111,7 +111,6 @@ def choose_difficulties():
 
 
 
-
 def player_name():
     name = ""
     writing = True
@@ -277,19 +276,25 @@ def inserer_mot():
         pygame.display.flip()
         clock.tick(60)
 
-
 def dessiner_pendu(erreurs):
-    
-    
-    
+    if erreurs >= 1:
+        pygame.draw.line(fenetre, NOIR, (100, 400), (100, 100), 5)  # Poteau
+        pygame.draw.line(fenetre, NOIR, (50, 400), (350, 400), 5)  # Le potau de bas
+        pygame.draw.line(fenetre, NOIR, (100, 100), (250, 100), 5)  # Le potau de haut
+        pygame.draw.line(fenetre, NOIR, (100, 150), (200, 100), 5)  # Le potau penchant
+        pygame.draw.line(fenetre, NOIR, (250, 180), (250, 100), 5)  # La corde
+    if erreurs >= 2:
+        pygame.draw.circle(fenetre, NOIR, (250, 210), 30, 5)  # Tête
+    if erreurs >= 3:
+        pygame.draw.line(fenetre, NOIR, (250, 235), (250, 335), 5)  # Corps
+    if erreurs >= 4:
+        pygame.draw.line(fenetre, NOIR, (250, 280), (315, 250), 5)  # Bras droit
     if erreurs >= 5:
-        pygame.draw.line(fenetre, NOIR, (150, 250), (100, 300), 5)  # Bras gauche
+        pygame.draw.line(fenetre, NOIR, (250, 280), (185, 250), 5)  # Bras gauche 
     if erreurs >= 6:
-        pygame.draw.line(fenetre, NOIR, (150, 250), (200, 300), 5)  # Bras droit
+        pygame.draw.line(fenetre, NOIR, (250, 335), (200, 385), 5)  # Jambe droite
     if erreurs >= 7:
-        pygame.draw.line(fenetre, NOIR, (150, 350), (100, 500), 5)  # Jambe gauche
-        pygame.draw.line(fenetre, NOIR, (150, 350), (200, 500), 5)  # Jambe droite
-
+        pygame.draw.line(fenetre, NOIR, (250, 335), (300, 385), 5)  # Jambe gauche
 
 
 def pendu(difficulte, name):

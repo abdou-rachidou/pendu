@@ -25,4 +25,4 @@ machine
 leur 
 opration 
 mince
- mot 
+ 
