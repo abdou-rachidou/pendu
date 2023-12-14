@@ -1,6 +1,7 @@
 import random
 import pygame
 import sys
+import matplotlib.pyplot as plt  # Importation de matplotlib.pyplot as plt pour pouvoir utiliser les couleur de manière plus facile
 
 
 
@@ -11,6 +12,12 @@ pygame.init()
 # Définition des couleurs
 BLANC = (255, 255, 255)
 NOIR = (0, 0, 0)
+ROUGE = "red"
+BLEUE = "blue"
+BLANC_FUMME = "white smoke"
+ROSE = "pink"
+
+
 
 
 # Configuration de la fenêtre
@@ -25,13 +32,13 @@ font = pygame.font.Font(None, 36)
 options = ["START A NEW GAME", "INSERT A NEW WORD IN THE FILE", "DISPLAY SCORES", "EXIT THE PROGRAMM"]
 
 def afficher_menu():
-    fenetre.fill(BLANC)
-    titre = font.render("HANGMAN  MENU", True, NOIR)
+    fenetre.fill(BLANC_FUMME)
+    titre = font.render("HANGMAN  MENU", True, ROUGE)
     fenetre.blit(titre, (largeur // 2 - titre.get_width() // 2, 50))
     y = 150
     regions_rectangulaires = {}  # Dictionnaire pour stocker les régions rectangulaires associées à chaque option
     for option in options:
-        texte = font.render(option, True, NOIR)
+        texte = font.render(option, True, BLEUE)
         largeur_texte, hauteur_texte = texte.get_size()
 
         # Dessiner la boîte autour de l'option
@@ -67,17 +74,17 @@ def afficher_mot_cache(mot, lettres_trouvees):
 
 def choose_difficulties():
     fenetre.fill(BLANC)
-    titre = font.render("CHOOSE DIFFICULTY", True, NOIR)
+    titre = font.render("CHOOSE DIFFICULTY", True, ROUGE)
     fenetre.blit(titre, (largeur // 2 - titre.get_width() // 2, 50))
 
     options_difficulte = ["EASY", "MEDIUM", "HARD", "BACK"]
     y = 150
     regions_difficulte = {}
 
-    difficultes = {"EASY": (1, 4), "MEDIUM": (5, 6), "HARD": (7, 27) }
+    difficultes = {"EASY": (1, 4), "MEDIUM": (5, 6), "HARD": (7, 20) }
 
     for option_difficulte in options_difficulte:
-        texte_difficulte = font.render(option_difficulte, True, NOIR)
+        texte_difficulte = font.render(option_difficulte, True, BLEUE)
         largeur_texte_difficulte, hauteur_texte_difficulte = texte_difficulte.get_size()
 
         region_rectangulaire_difficulte = pygame.Rect((largeur // 2 - 250, y, 500, 50))
@@ -132,10 +139,10 @@ def player_name():
                     name += event.unicode
 
         fenetre.fill(BLANC)
-        titre = font.render("HANGMAN USER NAME", True, NOIR)
+        titre = font.render("HANGMAN USER NAME", True, ROUGE)
         fenetre.blit(titre, (largeur // 2 - titre.get_width() // 2, 100))
 
-        prompt = font.render("Enter your name : {}".format(name), True, NOIR)
+        prompt = font.render("Enter your name : {}".format(name), True, BLEUE)
         fenetre.blit(prompt, (largeur // 2 - prompt.get_width() // 2, 230))
         pygame.display.flip()
         clock.tick(60)
@@ -143,6 +150,22 @@ def player_name():
     return name  # Retourne le nom de l'utilisateur après la boucle while
 
 
+
+def load_scores(filename="scores.txt"):
+    with open(filename, 'r') as file:
+        lines = file.readlines()
+    # Convertir les scores en une liste de dictionnaires {'nom': nom, 'score': score}
+    scores = [line.strip().split(":") for line in lines]
+    scores = [{'nom': score[0].strip(), 'score': int(score[1].strip())} for score in scores]
+    return scores
+
+def save_scores(player_name, erreurs_max, erreurs, filename="scores.txt"):
+    score = erreurs_max - erreurs
+    new_score = f"{player_name}:{score}"  
+
+    # Enregistrer le nouveau score dans le fichier
+    with open(filename, 'a') as file:
+        file.write(new_score + "\n")
 
 def display_scores():
     clock = pygame.time.Clock()
@@ -155,10 +178,10 @@ def display_scores():
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
-                    active = False  # Quitter la boucle si la touche Échap est enfoncée
+                    active = False 
 
         fenetre.fill(BLANC)
-        titre = font.render("HIGH BOARDSCORES", True, NOIR)
+        titre = font.render("HIGH BOARDSCORES", True, ROUGE)
         fenetre.blit(titre, (largeur // 2 - titre.get_width() // 2, 50))
 
         scores = load_scores()
@@ -166,7 +189,7 @@ def display_scores():
         if scores:
             y = 150
             for score in scores:
-                score_text = font.render(score[0] + " _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _" + score[1], True, NOIR)
+                score_text = font.render(f"{score['nom']} _ _ _ _ _  _ _  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ {score['score']}", True, NOIR)
                 fenetre.blit(score_text, (largeur // 2 - score_text.get_width() // 2, y))
                 y += 40
 
@@ -175,28 +198,7 @@ def display_scores():
 
 
 
-def load_scores(filename="scores.txt"):
-    
-    with open(filename, 'r') as file:
-        scores = file.readlines()
-    # Convertir les scores en une liste de tuples (nom, score)
-        scores = [tuple(score.strip().split(":")) for score in scores]
-        return scores
-
-
-
-def save_scores(player_name, erreurs_max, erreurs, filename="scores.txt"):
-    score = erreurs_max - erreurs
-    new_score = f"{player_name} : {score}"
-
-    # Enregistrer le nouveau score dans le fichier
-    with open(filename, 'a') as file:
-        file.write(new_score + "\n")
-
-
-
-
-# Modifier la fonction menu pour gérer l'option "Display Scores"
+# La Boucle principale de mon jeu
 def menu():
     name = ""  # Initialiser le nom ici
     while True:
@@ -268,13 +270,14 @@ def inserer_mot():
 
         fenetre.fill(BLANC)
 
-        titre = font.render("ADD A NEW WORD", True, NOIR)
+        titre = font.render("ADD A NEW WORD", True, ROUGE)
         fenetre.blit(titre, (largeur // 2 - titre.get_width() // 2, 100))
-        prompt = font.render("Enter a new word : {}".format(nouveau_mot), True, NOIR)
+        prompt = font.render("Enter a new word : {}".format(nouveau_mot), True, BLEUE)
         fenetre.blit(prompt, (largeur // 2 - prompt.get_width() // 2, 250))
 
         pygame.display.flip()
         clock.tick(60)
+
 
 def dessiner_pendu(erreurs):
     if erreurs >= 1:
@@ -284,7 +287,7 @@ def dessiner_pendu(erreurs):
         pygame.draw.line(fenetre, NOIR, (100, 150), (200, 100), 5)  # Le potau penchant
         pygame.draw.line(fenetre, NOIR, (250, 180), (250, 100), 5)  # La corde
     if erreurs >= 2:
-        pygame.draw.circle(fenetre, NOIR, (250, 210), 30, 5)  # Tête
+        pygame.draw.circle(fenetre, ROSE, (250, 210), 30, 5)  # Tête
     if erreurs >= 3:
         pygame.draw.line(fenetre, NOIR, (250, 235), (250, 335), 5)  # Corps
     if erreurs >= 4:
@@ -313,7 +316,7 @@ def pendu(difficulte, name):
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
+                if event.key == pygame.K_ESCAPE: # Appuyer echap pour revenir au menu du jeu 
                     return
                 elif event.key in range(pygame.K_a, pygame.K_z + 1):
                     lettre = chr(event.key).lower()
@@ -332,7 +335,7 @@ def pendu(difficulte, name):
         lettres_essayed_texte = font.render(f"Attempts allowed : {lettres_essayed}", True, NOIR)
         fenetre.blit(lettres_essayed_texte, (largeur // 2 - lettres_essayed_texte.get_width() // 2, 90))
 
-        erreurs_texte = font.render("Errors {}/{}".format(erreurs, erreurs_max), True, NOIR)
+        erreurs_texte = font.render("Errors {}/{}".format(erreurs, erreurs_max), True, ROUGE)
         fenetre.blit(erreurs_texte, (largeur // 2 - erreurs_texte.get_width() // 2, 300))
 
         dessiner_pendu(erreurs)
@@ -341,25 +344,25 @@ def pendu(difficulte, name):
         clock.tick(60)
 
         if set(lettres_trouvees) >= set(mot_a_trouver):
-            gagne_texte = font.render("Congratulations {}! You guessed the word '{}'.".format(name, mot_a_trouver), True, NOIR)
+            gagne_texte = font.render("Congratulations {}! You guessed the word '{}'.".format(name, mot_a_trouver), True, VERT)
             save_scores(name, (erreurs_max), erreurs)
             fenetre.blit(gagne_texte, (largeur // 2 - gagne_texte.get_width() // 2, 400))
-            s_text = font.render("Your score has been saved successfully!", True, NOIR)
+            s_text = font.render("Your score has been saved successfully!", True, VERT)
             fenetre.blit(s_text, (largeur // 2 - gagne_texte.get_width() // 2, 450))
             pygame.display.flip()
-            pygame.time.wait(3000)
-            pygame.K_RETURN
+            pygame.time.wait(5000)
+            return
 
         # Ajoutez cette condition pour mettre à jour le dessin après chaque devinette de lettre
         if erreurs > 0 and erreurs < erreurs_max and set(lettres_trouvees) < set(mot_a_trouver):
             dessiner_pendu(erreurs)
 
         if erreurs == erreurs_max:
-            perdu_texte = font.render("Failed, {} reached the maximum number of attempts. The word was :'{}'.".format(name, mot_a_trouver), True, NOIR)
+            perdu_texte = font.render("Failed, {} reached the maximum number of attempts. The word was :'{}'.".format(name, mot_a_trouver), True, ROUGE)
             fenetre.blit(perdu_texte, (largeur // 2 - perdu_texte.get_width() // 2, 530))
             pygame.display.flip()
-            pygame.time.wait(3000)
-            pygame.K_RETURN
+            pygame.time.wait(5000)
+            return
 
 
 
