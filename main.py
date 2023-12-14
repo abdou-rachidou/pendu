@@ -14,7 +14,6 @@ BLANC = (255, 255, 255)
 NOIR = (0, 0, 0)
 ROUGE = "red"
 BLEUE = "blue"
-BLANC_FUMME = "white smoke"
 ROSE = "pink"
 
 
@@ -32,7 +31,7 @@ font = pygame.font.Font(None, 36)
 options = ["START A NEW GAME", "INSERT A NEW WORD IN THE FILE", "DISPLAY SCORES", "EXIT THE PROGRAMM"]
 
 def afficher_menu():
-    fenetre.fill(BLANC_FUMME)
+    fenetre.fill(BLANC)
     titre = font.render("HANGMAN  MENU", True, ROUGE)
     fenetre.blit(titre, (largeur // 2 - titre.get_width() // 2, 50))
     y = 150
